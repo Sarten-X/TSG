@@ -1,0 +1,8 @@
+AuthName "Troubleshooting Guide"
+AuthUserFile "/home/sartenx/htpasswd"
+AuthType Basic
+Require valid-user
+
+AddHandler cgi-script .cgi .pl
+Options +ExecCGI
+

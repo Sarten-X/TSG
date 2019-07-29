@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<title>Troubleshooting guide</title>
+	<script>
+		function toggleForm(formId) {
+			var form = document.getElementById(formId);
+			try {
+				var button = form.parentElement.getElementsByClassName("toggle")[0];
+				if (button.innerHTML == "+") {
+					button.innerHTML = "&ndash;";
+				} else {
+					button.innerHTML = "+";
+				}
+			} catch (err) {}
+			
+			if (form.style.display === "block") {
+				form.style.display = "none";
+			} else {
+				form.style.display = "block";
+			}
+		}
+		
+		function toggleSection(sectionNumber) {
+			var section = document.getElementsByClassName("section")[sectionNumber];
+			var button = section.getElementsByClassName("toggle")[0];
+			if (button.innerHTML == "+") {
+				button.innerHTML = "&ndash;";
+			} else {
+				button.innerHTML = "+";
+			}
+			
+			var data = section.getElementsByClassName("sectionData")[0];
+			if (data.style.display === "none") {
+				data.style.display = "block";
+			} else {
+				data.style.display = "none";
+			}
+		}
+		
+		function toggleDetails(sectionNumber,itemNumber) {
+			var section = document.getElementsByClassName("sectionData")[sectionNumber];
+			var item = section.getElementsByClassName("item")[itemNumber];
+			var details = item.getElementsByClassName("details")[0];
+			var button = item.getElementsByClassName("toggle")[0];
+			if (button.innerHTML == "+") {
+				button.innerHTML = "&ndash;";
+			} else {
+				button.innerHTML = "+";
+			}
+			if (details.style.display === "block") {
+				details.style.display = "none";
+			} else {
+				details.style.display = "block";
+			}
+		}
+		
+		function editItem(sectionNumber,itemNumber) {
+			var section = document.getElementsByClassName("section")[sectionNumber];
+			var sectionData = section.getElementsByClassName("sectionData")[0];
+			var item = sectionData.getElementsByClassName("item")[itemNumber];
+			
+			var form = document.getElementById("itemEditForm");
+			var fields = form.getElementsByTagName("input");
+			fields.section.value = htmlUnescape(section.getElementsByClassName("sectionTitle")[0].innerHTML);
+			fields.applicability.value = htmlUnescape(item.getElementsByClassName("applicability")[0].innerHTML);
+			fields.symptom.value = htmlUnescape(item.getElementsByClassName("symptom")[0].innerHTML);
+			fields.confirmation.value = htmlUnescape(item.getElementsByClassName("confirmation")[0].innerHTML);
+			fields.resolution.value = htmlUnescape(item.getElementsByClassName("resolution")[0].innerHTML);
+			fields.idField.value = htmlUnescape(item.getElementsByClassName("id")[0].innerHTML);
+			
+			
+			var referenceList = form.getElementsByTagName("select").referenceList
+			while (referenceList.options.length) {	referenceList.remove(0); }
+			
+			var references = item.getElementsByClassName("reference");
+			for (var i = 0; i < references.length; i++) {
+				fields.reference.value = htmlUnescape(references[i].innerHTML);
+				addReference('itemEditForm');
+			}
+			fields.reference.value = "";
+			
+			if (form.style.display != "block") { toggleForm(form.id);	}
+			form.scrollIntoView();
+		}
+		
+		function addReference(formName) {
+			var form = document.getElementById(formName);
+			var reference = form.getElementsByTagName("input").reference;
+			var referenceList = form.getElementsByTagName("select").referenceList;
+			
+			var refer
+			
+			var option = document.createElement('option');
+			option.appendChild( document.createTextNode(reference.value) );
+			option.value = reference.value; 
+			referenceList.appendChild(option);
+			updateReferences(form);
+		}
+		
+		function removeReference(formName) {
+			var form = document.getElementById(formName);
+			var referenceList = form.getElementsByTagName("select").referenceList
+			referenceList.remove(referenceList.selectedIndex);
+			updateReferences(form);
+		}
+		
+		function updateReferences(form) {
+			var referenceList = form.getElementsByTagName("select").referenceList;
+			if (referenceList.options.length) {
+				var referenceString = pipeEscape(referenceList.options[0].text);
+				for (var i = 1; i < referenceList.options.length; i++) {
+					referenceString = referenceString  + "|" + pipeEscape(referenceList.options[i].text);
+				}
+				form.getElementsByTagName("input").references.value = referenceString;
+			}
+		}
+		
+		function pipeEscape(text) {
+			text = text.replace(/\\/g, "\\\\");
+			text = text.replace(/\|/g, "\\|");
+			return text;
+		}
+		
+		function htmlUnescape(text) {
+			return (new DOMParser().parseFromString(text, "text/html")).documentElement.textContent;
+		}
+	</script>
+	<link href="TSG.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<h1>Troubleshooting guide</h1>
+	<p class="introduction">This is the troubleshooting guide. Sections are below.</p>
+	<p class="updateAlert">Updates are available.</p>
+	<TMPL_LOOP NAME="Sections">
+	<div class="section">	
+		<h2 class="sectionHeader"><button class="toggle" onclick="toggleSection(<TMPL_VAR ESCAPE="JS" NAME="SectionNumber">)">&ndash;</button><span class="sectionTitle"><TMPL_VAR ESCAPE="HTML" NAME="Name"></span></h2>
+		
+		<div class="sectionData">
+			<table>
+				<tr>
+					<th>Applicability</th>
+					<th>Symptom</th>
+					<th>Confirmation</th>
+					<th>Resolution</th>
+					<th>More</th>
+				</tr>
+				<TMPL_LOOP NAME="Items">
+				<tr class="item">
+					<td><span class="applicability"><TMPL_VAR ESCAPE="HTML" NAME="Applicability"></span></td>
+					<td><span class="symptom"><TMPL_VAR ESCAPE="HTML" NAME="Symptom"></span></td>
+					<td><span class="confirmation"><TMPL_VAR ESCAPE="HTML" NAME="Confirmation"></span></td>
+					<td><span class="resolution"><TMPL_VAR ESCAPE="HTML" NAME="Resolution"></span></td>
+					<td>
+						<button class="toggle" onclick="toggleDetails(<TMPL_VAR ESCAPE="JS" NAME="SectionNumber">,<TMPL_VAR ESCAPE="JS" NAME="ItemNumber">)">+</button>
+						<div class="details">
+							ID: <span class="id"><TMPL_VAR ESCAPE="HTML" NAME="ID"></span><br />
+							Last modified by: <span class="author"><TMPL_VAR ESCAPE="HTML" NAME="Author"></span><br />
+							Last modified on: <TMPL_VAR ESCAPE="HTML" NAME="Timestamp"><br />
+							References: <ol><TMPL_LOOP NAME="References"><li><span class="reference"><TMPL_VAR ESCAPE="HTML" NAME="Reference"></span></li></TMPL_LOOP></ol>
+							<button class="toggle" onclick="editItem(<TMPL_VAR ESCAPE="JS" NAME="SectionNumber">,<TMPL_VAR ESCAPE="JS" NAME="ItemNumber">)">Edit</button>
+						</div>
+					</td>
+				</tr>
+				</TMPL_LOOP>
+			</table>
+		</div>
+	</div>
+	</TMPL_LOOP>
+	<div class="form">
+<!--		<h2 class="formHeader"><button class="toggle" onclick="toggleForm('itemEditForm')">+</button>Edit item</h2>-->
+		<div class="formData" id="itemEditForm">
+			<form action="index.pl" method="post" onreset="while (this.getElementsByTagName('select').references.options.length) { this.getElementsByTagName('select').references.remove(0); }">
+				<input type="hidden" name="mode" value="editItem" />
+				<p><span class="fieldTitle">Section:</span><input name="section" type="text" value="" /></p>
+				<p><span class="fieldTitle">Applicability:</span><input name="applicability" type="text" value="" /></p>
+				<p><span class="fieldTitle">Symptom:</span><input name="symptom" type="text" value="" /></p>
+				<p><span class="fieldTitle">Confirmation:</span><input name="confirmation" type="text" value="" /></p>
+				<p><span class="fieldTitle">Resolution:</span><input name="resolution" type="text" value="" /></p>
+				<p class="idField"><span class="fieldTitle">ID:</span><input name="idField" type="text" value="" /></p>
+				<div>
+					<input name="reference" type="text" value=""><input name="references" type="hidden" value=""><select name="referenceList" size="5"></select>
+					<button onclick="addReference('itemEditForm'); return false;">Add</button>
+					<button onclick="removeReference('itemEditForm'); return false;">Remove</button>
+				</div>
+				<p><input name="submit" type="submit" value="Submit" /></p>
+				<p><input type="reset" value="Cancel" onclick="toggleForm('itemEditForm');" /></p>
+			</form>
+		</div>
+	</div>
+	<div class="form">
+		<h2 class="formHeader"><button class="toggle" onclick="toggleForm('itemAddForm')">+</button>Add item</h2>
+		<div class="formData" id="itemAddForm">
+			<form action="index.pl" method="post">
+				<input type="hidden" name="mode" value="addItem" />
+				<p><span class="fieldTitle">Section:</span><input name="section" type="text" value="" /></p>
+				<p><span class="fieldTitle">Applicability:</span><input name="applicability" type="text" value="" /></p>
+				<p><span class="fieldTitle">Symptom:</span><input name="symptom" type="text" value="" /></p>
+				<p><span class="fieldTitle">Confirmation:</span><input name="confirmation" type="text" value="" /></p>
+				<p><span class="fieldTitle">Resolution:</span><input name="resolution" type="text" value="" /></p>
+				<p class="idField"><span class="fieldTitle">ID:</span><input name="idField" type="text" value="" /></p>
+				<div>
+					<p>References:</span><input name="reference" type="text" value=""><input name="references" type="hidden" value=""><select name="referenceList" size="5"></select></p>
+					<button onclick="addReference('itemAddForm'); return false;">Add</button>
+					<button onclick="removeReference('itemAddForm'); return false;">Remove</button>
+				</div>
+				<p><input name="submit" type="submit" value="Submit" /></p>
+			</form>
+		</div>
+	</div>
+	<div class="form">
+		<h2 class="formHeader"><button class="toggle" onclick="toggleForm('sectionEditForm')">+</button>Add section</h2>
+		<div class="formData" id="sectionEditForm">
+			<form action="index.pl" method="post">
+				<input type="hidden" name="mode" value="addSection" />
+				<tmpl_if errors>
+					<tmpl_loop errors>
+						<p style="color: red"><tmpl_var error></p>
+					</tmpl_loop>
+				</tmpl_if>
+				<p><span class="fieldTitle">Section name:</span><input name="Name" type="text" value="" /></p>
+				<p><span class="fieldTitle">Description:</span><input name="Description" type="text" value="" /></p>
+				<p><input name="Submit" type="submit" value="Submit" /></p>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

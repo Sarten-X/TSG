@@ -1,0 +1,135 @@
+/*
+https://paletton.com/#uid=53q0u0kffu95KOQapD0jWpeo1kO
+528497
+Hue 218 degrees
+Dist 30 degrees
+*/
+:root {
+	--light-bg: #b5d1db;
+	--dark-bg: #33697e;
+	--light-accent: #7fa8b8;
+	--dark-accent: #528497;
+	--light-trim: #f0b97e;
+	--mid-trim: #c98d4c;
+	--dark-trim: #a66a29;
+	--heading-color: #f0b97e;
+	--title-accent: #1d5368;
+	--text-color: #000000;
+	--highlight-text-color: #bbe4cb;
+}
+body {
+	background-color: var(--light-bg);
+	font-family: sans-serif;
+}
+
+body h1 {
+	background-color: var(--title-accent);
+	color: var(--heading-color);
+	padding: 1em;
+}
+
+button, input[type=submit], input[type=reset] {
+	background-color: var(--light-trim);
+	border-color: var(--dark-trim);
+}
+
+.section {
+	background-color: var(--dark-accent);
+	margin-top:1em;
+	margin-bottom:1em;
+}
+
+.sectionHeader {
+	background-color: var(--dark-bg);
+	color: var(--heading-color);
+	padding: .5em;
+}
+
+.sectionHeader button {
+	margin:.1em;
+	margin-right: 1em;
+}
+
+.updateAlert {
+	display: none;
+}
+
+table {
+	background-color: var(--mid-trim);
+	border: 1px outset;
+	border-color: var(--light-trim);
+	width: 100%;
+}
+
+tr:nth-child(odd) {
+	background-color: var(--light-accent);
+}
+
+tr:nth-child(even) {
+	background-color: var(--light-bg);
+}
+
+th {
+	color: var(--text-color);
+	border: 1px outset;
+	border-color: var(--light-trim);
+	font-weight: bold;
+}
+
+td {
+	color: var(--text-color);
+	border: 1px inset;
+	border-color: var(--light-trim);
+	padding: .5em;
+}
+
+td button {
+	background-color: var(--dark-accent);
+	border-color: var(--dark-bg);
+	color: var(--highlight-text-color);
+}
+
+.details {
+	display: none;
+}
+
+.form {
+	border: 1px outset;
+	background-color: #1d5368;	
+	color: var(--highlight-text-color);
+}
+
+.formHeader {
+	background-color: var(--dark-bg);
+	color: var(--heading-color);
+	padding: .5em;
+	margin: 0;
+}
+
+.formHeader button {
+	margin:.1em;
+	margin-right: 1em;
+}
+
+.formData {
+	display: none;
+	border: 2px outset;
+	background-color: var(--dark-bg);
+	color:#bdc3e0;
+	padding: 1em;
+}
+
+.formData > form > p, .formData > form > div  {
+	border: 2px inset;
+	padding: .5em;
+	margin: 0px;
+}
+
+.fieldTitle {
+	width: 200px;
+	min-width: 200px;
+}
+
+.idField {
+	display: none;
+}

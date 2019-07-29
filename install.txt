@@ -1,0 +1,8 @@
+* apt-get install libtext-csv-xs-perl libcgi-application-perl
+* Add to end of apache2.conf:
+	<directory /var/www/tsg>
+		AllowOverride All
+	</directory>
+* Symlink /var/www/tsg to install directory
+* Configure .htpasswd
+
